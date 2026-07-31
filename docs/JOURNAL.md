@@ -31,3 +31,10 @@ revol_util, total_acc, mort_acc, verification_status.
 - One-hot encoded: home_ownership, verification_status, purpose, addr_state,
   initial_list_status, application_type, disbursement_method, pymnt_plan
 - Final shape: (1,305,165, 139), 0 missing values
+
+## Baseline model — Logistic Regression
+- Scaled features with StandardScaler (fit on train only)
+- class_weight='balanced' to address 80/20 class imbalance
+- Results: precision (default)=0.33, recall (default)=0.66, ROC-AUC=0.72
+- Trade-off: balanced weighting favors catching more defaulters at cost of more false positives
+- Next: try XGBoost to see if a more complex model improves both precision and recall together
