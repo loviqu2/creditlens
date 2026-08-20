@@ -45,3 +45,12 @@ revol_util, total_acc, mort_acc, verification_status.
 - XGBoost modestly outperforms; remaining gap likely reflects genuine 
   unpredictability in default risk, not model limitations. Chose XGBoost 
   as production model.
+
+## SHAP explainability
+- Used TreeExplainer on XGBoost model
+- Confirmed per-applicant explanations make sense (e.g. sub_grade, dti driving risk up;
+  loan_to_income, shorter term driving risk down)
+- Global summary plot confirms sub_grade is the single strongest predictor overall,
+  consistent with it being LendingClub's own internal risk assessment
+- Built explain_applicant() function returning: probability + top risk factors + 
+  top protective factors, ready to be reused inside the API later
