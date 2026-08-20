@@ -38,3 +38,10 @@ revol_util, total_acc, mort_acc, verification_status.
 - Results: precision (default)=0.33, recall (default)=0.66, ROC-AUC=0.72
 - Trade-off: balanced weighting favors catching more defaulters at cost of more false positives
 - Next: try XGBoost to see if a more complex model improves both precision and recall together
+
+## Model comparison
+- Logistic Regression: recall=0.66, precision=0.33, AUC=0.72
+- XGBoost: recall=0.68, precision=0.34, AUC=0.74
+- XGBoost modestly outperforms; remaining gap likely reflects genuine 
+  unpredictability in default risk, not model limitations. Chose XGBoost 
+  as production model.
