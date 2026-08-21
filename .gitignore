@@ -3,4 +3,4 @@ data/*.csv
 __pycache__/
 .env
 *.pkl
-.DS_Store
+.DS_Storedata/chroma_db?

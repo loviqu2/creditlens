@@ -54,3 +54,15 @@ revol_util, total_acc, mort_acc, verification_status.
   consistent with it being LendingClub's own internal risk assessment
 - Built explain_applicant() function returning: probability + top risk factors + 
   top protective factors, ready to be reused inside the API later
+
+
+## RAG KNOWLEDGE BASE
+- https://www.consumerfinance.gov/rules-policy/regulations/1002/9/
+- https://www.consumerfinance.gov/rules-policy/regulations/1002/c/
+- https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/
+- Sourced real regulatory text from CFPB (ECOA/Regulation B, 12 CFR 1002.9)
+- 3 policy documents, chunked by markdown headers into 9 chunks
+- Embedded with sentence-transformers (all-MiniLM-L6-v2), stored in ChromaDB (persistent, local)
+- Test query on a debt-to-income/credit-scoring scenario correctly retrieved all 3 
+  most relevant chunks, confirming semantic search works (matched "credit scoring 
+  model" to "Credit Scoring Systems" despite different wording)
