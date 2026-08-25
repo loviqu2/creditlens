@@ -4,3 +4,4 @@ __pycache__/
 .env
 *.pkl
 .DS_Storedata/chroma_db?
+data/*.parquet
