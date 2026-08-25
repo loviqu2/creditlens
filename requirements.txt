@@ -4,3 +4,4 @@ scikit-learn
 matplotlib
 jupyterchromadb
 sentence-transformers
+pyarrow

@@ -66,3 +66,30 @@ revol_util, total_acc, mort_acc, verification_status.
 - Test query on a debt-to-income/credit-scoring scenario correctly retrieved all 3 
   most relevant chunks, confirming semantic search works (matched "credit scoring 
   model" to "Credit Scoring Systems" despite different wording)
+
+  ## LLM explanation layer (Stage 6)
+- Used Ollama (local, free) running llama3.1 for generation — no API key/cost required
+- Refactored reusable logic (model/explainer/embedder loading, SHAP explanation,
+  RAG retrieval, LLM generation) into src/inference.py for use across notebooks
+  and the future API, instead of duplicating code per notebook
+- Built full pipeline: applicant -> SHAP risk factors -> query built from top
+  factors -> RAG retrieval of relevant policy chunks -> LLM generates final
+  plain-English, ECOA/Reg B-grounded explanation
+- Tested end-to-end on a real applicant: generated explanation correctly cited
+  interest rate, dti, and account balance history as risk factors
+
+### Issue found: geographic bias risk
+- LLM-generated explanation cited "New York, a high-risk state" as a denial
+  reason. Using location as a disclosed reason resembles redlining and would
+  likely be non-compliant in a real institution, even though addr_state was
+  a legitimate model feature.
+- Follow-up: exclude location-based SHAP factors from what's passed to the
+  LLM prompt, to prevent geography from appearing in generated explanations.
+
+### Key learnings
+- Notebooks don't share memory across files — each has its own kernel.
+  Solved by persisting cleaned data (parquet) and trained artifacts (joblib/
+  ChromaDB) to disk, and moving reusable logic into src/ modules.
+- A technically accurate model-derived reason isn't automatically a
+  compliant explanation — real deployment needs guardrails on what the LLM
+  is allowed to surface, not just accurate SHAP values.
