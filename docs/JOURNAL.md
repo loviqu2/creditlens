@@ -93,3 +93,44 @@ revol_util, total_acc, mort_acc, verification_status.
 - A technically accurate model-derived reason isn't automatically a
   compliant explanation — real deployment needs guardrails on what the LLM
   is allowed to surface, not just accurate SHAP values.
+
+  ## Experiment tracking (Stage 7)
+- Added MLflow for experiment tracking, replacing manual result logging in journal
+- Set explicit tracking URI (file:../mlruns) to avoid working-directory confusion
+  between notebooks and terminal
+- Logged both Logistic Regression and XGBoost runs with their parameters and metrics
+- MLflow UI (localhost:5000) allows visual side-by-side comparison of runs
+- Learned: registering a model in MLflow's Model Registry just catalogs/versions it;
+  it does not mean the model is deployed or serving real traffic — actual deployment
+  happens separately in the API/Docker/cloud stages
+
+
+  ## Known issue: LLM number misattribution (Stage 8)
+- Generated explanation incorrectly labeled the model's default probability
+  (26.49%) as a "credit utilization rate" — a real value that exists
+  elsewhere in the data but was not what the number represented.
+- Root cause: the prompt stated the number's meaning but didn't explicitly
+  rule out other interpretations, and multiple values in the data are
+  percentages, creating ambiguity for the LLM.
+- Fix: made the prompt explicitly label the value and state what it is NOT,
+  reducing ambiguity.
+- Broader lesson: fluent, confident LLM output is not the same as accurate
+  output — grounding data (SHAP, RAG) reduces but doesn't eliminate
+  hallucination risk. A production system would need automated validation
+  checks on generated explanations before showing them to a real applicant.
+
+
+  ## Stage 8 refinement: prompt hardening + validation
+- Found and fixed: LLM occasionally mislabeled the risk probability as an 
+  unrelated percentage (e.g., "credit utilization rate") — fixed by explicitly 
+  labeling the number's meaning and stating what it is NOT in the prompt.
+- Found and fixed: LLM sometimes omitted the exact probability from generated 
+  text — fixed by explicitly requiring it be stated.
+- Found and fixed: LLM occasionally included meta-commentary about its own 
+  writing process — fixed by explicitly instructing output-only, no notes.
+- Added validate_explanation() in src/inference.py: automated check confirming 
+  the probability and risk tier actually appear in generated text. Wired into 
+  /predict response as a transparency signal.
+- Key lesson: fluent LLM output requires iterative prompt hardening and 
+  automated guardrails, not blind trust — grounding (SHAP + RAG) reduces but 
+  doesn't eliminate the need for verification.
