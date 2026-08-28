@@ -134,3 +134,20 @@ revol_util, total_acc, mort_acc, verification_status.
 - Key lesson: fluent LLM output requires iterative prompt hardening and 
   automated guardrails, not blind trust — grounding (SHAP + RAG) reduces but 
   doesn't eliminate the need for verification.
+
+
+  ## Containerization (Stage 9)
+- Wrote Dockerfile: python:3.9-slim base, dependencies installed before code 
+  copy (for build caching), copies src/models/chroma_db, runs uvicorn
+- Added .dockerignore to exclude venv/, notebooks/, .git/ from image
+- Found and fixed: corrupted requirements.txt (merged "jupyterchromadb" line 
+  from a bad echo command) caused build failures
+- Consolidated two divergent requirements.txt files (notebooks/ and root) 
+  into one, regenerated via `pip freeze` for full accuracy instead of 
+  hand-maintained partial list
+- Handled cross-container networking: app connects to host-machine Ollama 
+  via OLLAMA_HOST=http://host.docker.internal:11434, passed as an environment 
+  variable at runtime (not hardcoded) for portability across environments
+- Set up docker-compose.yml for convenient single-command startup
+- Verified: full pipeline (predict -> SHAP -> RAG -> LLM) works identically 
+  inside the container as it did running locally
