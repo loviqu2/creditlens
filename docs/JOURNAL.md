@@ -151,3 +151,18 @@ revol_util, total_acc, mort_acc, verification_status.
 - Set up docker-compose.yml for convenient single-command startup
 - Verified: full pipeline (predict -> SHAP -> RAG -> LLM) works identically 
   inside the container as it did running locally
+
+
+
+## Cloud LLM integration (Stage 10, part 1)
+- Switched deployed version to Groq's free API instead of local Ollama, since 
+  AWS Educate's Starter account restricts instance size (t3.micro/small only, 
+  1-2GB RAM) — insufficient to run llama3.1 locally on the server
+- generate_explanation() now toggles between Ollama (local dev) and Groq 
+  (deployed) via USE_GROQ_API environment variable, keeping local workflow 
+  unchanged
+- Found and fixed: Groq deprecated llama-3.1-8b-instant model (June 2026), 
+  migrated to openai/gpt-oss-20b
+- Found and fixed: reasoning-style model needed higher max_tokens (300 -> 1024) 
+  since it consumes budget on internal reasoning before final output
+- Verified locally with USE_GROQ_API=true before deploying

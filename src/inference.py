@@ -4,6 +4,7 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 import ollama
 import os 
+from groq import Groq
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -88,5 +89,17 @@ Output ONLY the explanation text itself. Do not include any notes, meta-commenta
 disclaimers about your own process, or explanations of how you approached the task.
 
 """
-    response = ollama.generate(model='llama3.1', prompt=prompt)
-    return response['response']
+    use_groq = os.environ.get("USE_GROQ_API", "false").lower() == "true"
+    
+    if use_groq:
+        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-20b",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=1024
+        )
+
+        return response.choices[0].message.content
+    else:
+        response = ollama.generate(model='llama3.1', prompt=prompt)
+        return response['response']

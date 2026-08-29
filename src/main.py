@@ -4,6 +4,8 @@ import sys
 sys.path.append('.')
 from src.inference import load_pipeline, explain_applicant, build_query_from_shap, retrieve_policy_context, generate_explanation, validate_explanation
 import pandas as pd
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(title="CreditLens API")
 
