@@ -166,3 +166,19 @@ revol_util, total_acc, mort_acc, verification_status.
 - Found and fixed: reasoning-style model needed higher max_tokens (300 -> 1024) 
   since it consumes budget on internal reasoning before final output
 - Verified locally with USE_GROQ_API=true before deploying
+
+
+## Cloud deployment (Stage 10)
+- Deployed to AWS EC2 (t3.micro, Ubuntu) using AWS Educate credits
+- Launched instance, connected via SSH, installed Docker
+- Found and fixed: models/ folder was never committed to git — copied via scp 
+  directly to the server as a workaround; noted as a repo issue to fix locally
+- Found and fixed: default torch install pulled in several GB of unused NVIDIA 
+  CUDA libraries (server has no GPU) — switched to CPU-only torch via 
+  --extra-index-url (not --index-url, which fully replaces the default PyPI 
+  index and breaks resolution of torch's other dependencies)
+- Hit and resolved repeated "no space left on device" errors from oversized 
+  image + failed build cache — used docker system prune to reclaim space
+- Verified live deployment: public IP reachable from outside local network, 
+  full pipeline (predict -> SHAP -> RAG -> Groq LLM) working end to end in 
+  production

@@ -65,6 +65,7 @@ humanfriendly==10.0
 idna==3.18
 importlib_metadata==8.7.1
 importlib_resources==6.5.2
+iniconfig==2.1.0
 ipykernel==6.31.0
 ipython==8.18.1
 ipywidgets==8.1.8
@@ -132,6 +133,7 @@ parso==0.8.7
 pexpect==4.9.0
 pillow==11.3.0
 platformdirs==4.4.0
+pluggy==1.6.0
 prometheus_client==0.25.0
 prompt_toolkit==3.0.52
 protobuf==6.33.6
@@ -150,6 +152,7 @@ Pygments==2.20.0
 pyparsing==3.3.2
 PyPika==0.51.1
 pyproject_hooks==1.2.0
+pytest==8.4.2
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
 python-json-logger==4.0.0
@@ -188,6 +191,7 @@ threadpoolctl==3.6.0
 tinycss2==1.4.0
 tokenizers==0.22.2
 tomli==2.4.1
+torch==2.8.0
 tornado==6.5.7
 tqdm==4.70.0
 traitlets==5.15.1
