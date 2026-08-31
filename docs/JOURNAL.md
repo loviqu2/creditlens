@@ -182,3 +182,24 @@ revol_util, total_acc, mort_acc, verification_status.
 - Verified live deployment: public IP reachable from outside local network, 
   full pipeline (predict -> SHAP -> RAG -> Groq LLM) working end to end in 
   production
+
+
+  ## CI Pipeline (Stage 11)
+- Added GitHub Actions workflow (.github/workflows/ci.yml): on every push/PR to 
+  main, checks out code, installs dependencies, runs tests, verifies Docker 
+  image builds successfully
+- Added first automated test (tests/test_inference.py) covering get_risk_tier() 
+  boundary logic — chosen because it's deterministic business logic, exactly 
+  the kind of thing worth unit testing (vs. LLM output, which isn't 
+  deterministic)
+- CI caught a real bug on first run: models/*.pkl files were never actually 
+  committed to git (*.pkl was silently excluded via .gitignore this whole 
+  time). This had been masked locally and on EC2 by manually scp-ing the files 
+  directly — a fresh git clone (exactly what CI does) exposed the gap 
+  immediately.
+- Fixed: removed *.pkl exclusion from .gitignore, committed models/ properly. 
+  Also fixed a corrupted .gitignore line (merged ".DS_Store" and 
+  "data/chroma_db" from an earlier bad edit).
+- Key lesson: CI's value isn't abstract — it caught a genuine deployment-
+  breaking bug within one push that had been silently masked by manual 
+  workarounds for two prior stages.
