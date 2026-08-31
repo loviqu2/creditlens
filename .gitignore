@@ -2,6 +2,6 @@ venv/
 data/*.csv
 __pycache__/
 .env
-*.pkl
-.DS_Storedata/chroma_db?
+.DS_Store
+data/chroma_db
 data/*.parquet
